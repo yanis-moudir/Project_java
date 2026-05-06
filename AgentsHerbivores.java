@@ -7,10 +7,21 @@ public class AgentsHerbivores extends Agent implements OutilsHerbivores{
         this.nom=nom;
     }
     public void recolter(int lig,int col){
+       Ressource r=terrain.getCase(lig, col);
+       if(r instanceof Herbiers){
+            r.setQuantite(r.getQuantite() - 1);
+           Statistiques.incrementerRessources();
+        
 
     }
+    }
     public void planter(int lig,int col){
-        
+         Ressource r=terrain.getCase(lig, col);
+         if(terrain.caseEstVide(lig, col)){
+             terrain.setCase(lig, col, new Herbiers("Herbiers",1));
+             
+      
+    }
     }
     public String toString(){//pas besoin de super vu qu'il sont protected 
         return "Nom: "+nom+" Position:("+x+","+y+")"+" Vie: "+enVie;

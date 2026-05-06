@@ -3,6 +3,8 @@ import java.util.ArrayList;
 public class Lamartin extends AgentsHerbivores{
 
     private boolean herbeAcote;
+    private int ligHerbe;
+    private int colHerbe;   
 
     public Lamartin(String nom,int x,int y,Terrain terrain){
         super(nom, x, y, terrain);
@@ -14,11 +16,22 @@ public class Lamartin extends AgentsHerbivores{
         for(Ressource r:ressource){
             if(r instanceof Herbiers && Math.abs(this.x-r.getLigne())<=1 && Math.abs(this.y-r.getColonne())<=1){
                 herbeAcote=true;
+                ligHerbe=r.getLigne();
+                colHerbe=r.getColonne();    
             }
         }
+        if (herbeAcote==false){
+           do {
+    ligHerbe = (int)(Math.random() * terrain.nbLignes);
+    colHerbe = (int)(Math.random() * terrain.nbColonnes);
+} while (!terrain.caseEstVide(ligHerbe, colHerbe));
        
-    }
-    public boolean getHerbeAcote(){return herbeAcote;}
+}
+}
+
+ boolean getHerbeAcote(){return herbeAcote;}
+    public int getLigneHerbe(){return ligHerbe;}
+    public int getColonneHerbe(){return colHerbe;}
     public String toString(){
         return "Lamartin "+super.toString();
     }
