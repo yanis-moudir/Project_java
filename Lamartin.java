@@ -22,8 +22,8 @@ public class Lamartin extends AgentsHerbivores{
         }
         if (herbeAcote==false){
            do {
-    ligHerbe = (int)(Math.random() * terrain.nbLignes);
-    colHerbe = (int)(Math.random() * terrain.nbColonnes);
+    ligHerbe = (int)(Math.random() * terrain.nbLignes)+1;
+    colHerbe = (int)(Math.random() * terrain.nbColonnes)+1;
 } while (!terrain.caseEstVide(ligHerbe, colHerbe));
        
 }

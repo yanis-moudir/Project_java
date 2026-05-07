@@ -1,0 +1,4 @@
+=== Étape 1 ===
+Herbivores vivants: 1
+=== Étape 2 ===
+Herbivores vivants: 0

@@ -22,8 +22,8 @@ public class Orque extends AgentsCarnivores{
         }
         if (proieAcote==false){
            do {
-    ligProie = (int)(Math.random() * terrain.nbLignes);
-    colProie = (int)(Math.random() * terrain.nbColonnes);
+    ligProie = (int)(Math.random() * terrain.nbLignes)+1;
+    colProie = (int)(Math.random() * terrain.nbColonnes)+1;
 } while (!terrain.caseEstVide(ligProie, colProie));
         }
 }
