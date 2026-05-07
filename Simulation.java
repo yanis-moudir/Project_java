@@ -40,35 +40,32 @@ public class Simulation{
         ressources.add(r);
     }
     }
-    public void afficherTerrain() {
+    public String afficherTerrain() {
+    StringBuilder sb = new StringBuilder();
     String[][] grille = new String[terrain.nbLignes + 1][terrain.nbColonnes + 1];
     
-    // remplir avec cases vides
     for (int i = 1; i <= terrain.nbLignes; i++)
         for (int j = 1; j <= terrain.nbColonnes; j++)
             grille[i][j] = "   ";
     
-    // placer les ressources
     for (Ressource r : ressources)
         grille[r.getLigne()][r.getColonne()] = " " + r.type.substring(0,1) + " ";
     
-    // placer les agents
     for (AgentsHerbivores h : agentsHerbivoreses)
         grille[h.x][h.y] = " L ";
     for (AgentsCarnivores c : agentsCarnivoreses)
         grille[c.x][c.y] = " Oq";
 
-    // séparateur horizontal
     String sep = "+---".repeat(terrain.nbColonnes) + "+";
     
-    // afficher
     for (int i = 1; i <= terrain.nbLignes; i++) {
-        System.out.println(sep);
+        sb.append(sep).append("\n");
         for (int j = 1; j <= terrain.nbColonnes; j++)
-            System.out.print("|" + grille[i][j]);
-        System.out.println("|");
+            sb.append("|").append(grille[i][j]);
+        sb.append("|\n");
     }
-    System.out.println(sep);
+    sb.append(sep).append("\n");
+    return sb.toString();
 }
     public void etape(){
     for (AgentsHerbivores h : agentsHerbivoreses) {
@@ -134,7 +131,7 @@ for (Ressource r : ressources) {
         ((Herbiers) r).evoluer();
     }
 }
-afficherTerrain();
+System.out.print(afficherTerrain());
 System.out.println("=== Herbivores ===");
 for (AgentsHerbivores h : agentsHerbivoreses) {
     System.out.println(h);
@@ -155,6 +152,12 @@ public void lancerSimulation(int nbEtapes, BufferedWriter writer) throws IOExcep
         writer.newLine();
         // écrire les stats
         writer.write("Herbivores vivants: " + agentsHerbivoreses.size());
+        writer.newLine();
+        writer.write("Carnivores vivants: " + agentsCarnivoreses.size());
+        writer.newLine();
+        writer.write("Ressources récoltées: " + ressources.size());
+        writer.newLine();
+        writer.write("Terrain:"+afficherTerrain());
         writer.newLine();
         etape();
         

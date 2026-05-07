@@ -1,4 +1,4 @@
-public class AgentsHerbivores extends Agent implements OutilsHerbivores{
+public abstract class AgentsHerbivores extends Agent implements OutilsHerbivores{
 
     protected String nom;
 

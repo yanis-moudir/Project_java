@@ -1,4 +1,4 @@
-public class AgentsCarnivores extends Agent implements OutilsCarnivores{
+public abstract class AgentsCarnivores extends Agent implements OutilsCarnivores{
 
     protected boolean enChasse;
 
