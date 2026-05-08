@@ -73,6 +73,7 @@ public class Simulation{
             ((Lamartin) h).setHerbeAcote(ressources);
             if(((Lamartin) h).getHerbeAcote()){
                 ((Lamartin) h).recolter(((Lamartin) h).getLigneHerbe(), ((Lamartin) h).getColonneHerbe());
+                System.out.println("DEBUG quantite=" + (r != null ? r.getQuantite() : "null"));
                 System.out.println(">> Lamartin a récolté un Herbier en (" + ((Lamartin)h).getLigneHerbe() + "," + ((Lamartin)h).getColonneHerbe() + ")");
                 Ressource r = terrain.getCase(((Lamartin) h).getLigneHerbe(), ((Lamartin) h).getColonneHerbe());
             if (r != null && r.getQuantite() == 0) {
