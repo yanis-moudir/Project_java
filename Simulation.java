@@ -31,9 +31,11 @@ public class Simulation{
 
     public void ajouterHerbivore(AgentsHerbivores a){
         agentsHerbivoreses.add(a);
+        Statistiques.incrementerHerbivores();
     }
     public void ajouterCarnivore(AgentsCarnivores a){
         agentsCarnivoreses.add(a);
+        Statistiques.incrementerCarnivores();
     }
     public void ajouterRessource(Ressource r, int lig, int col){
           if (terrain.setCase(lig, col, r)) {
@@ -48,13 +50,20 @@ public class Simulation{
         for (int j = 1; j <= terrain.nbColonnes; j++)
             grille[i][j] = "   ";
     
-    for (Ressource r : ressources)
+    for (Ressource r : ressources) {
+    if (terrain.sontValides(r.getLigne(), r.getColonne())) {
         grille[r.getLigne()][r.getColonne()] = " " + r.type.substring(0,1) + " ";
-    
+    }
+}
     for (AgentsHerbivores h : agentsHerbivoreses)
-        grille[h.x][h.y] = " L ";
+        if(terrain.sontValides(h.x, h.y)){
+            grille[h.x][h.y] = " L ";
+        }
     for (AgentsCarnivores c : agentsCarnivoreses)
+        if(terrain.sontValides(c.x, c.y)){
         grille[c.x][c.y] = " Oq";
+        }
+
 
     String sep = "+---".repeat(terrain.nbColonnes) + "+";
     
@@ -69,12 +78,13 @@ public class Simulation{
 }
     public void etape(){
     for (AgentsHerbivores h : agentsHerbivoreses) {
+        ((Lamartin) h).setHerbeAcote(ressources);
         if (h instanceof Lamartin) {
             ((Lamartin) h).setHerbeAcote(ressources);
             if(((Lamartin) h).getHerbeAcote()){
                 ((Lamartin) h).recolter(((Lamartin) h).getLigneHerbe(), ((Lamartin) h).getColonneHerbe());
                 
-                System.out.println(">> Lamartin a récolté un Herbier en (" + ((Lamartin)h).getLigneHerbe() + "," + ((Lamartin)h).getColonneHerbe() + ")");
+                
                 Ressource r = terrain.getCase(((Lamartin) h).getLigneHerbe(), ((Lamartin) h).getColonneHerbe());
             if (r != null && r.getQuantite() == 0) {
                 terrain.viderCase(((Lamartin) h).getLigneHerbe(), ((Lamartin) h).getColonneHerbe());
@@ -82,7 +92,7 @@ public class Simulation{
             }
                 }
             else{((Lamartin) h).planter(((Lamartin) h).getLigneHerbe(), ((Lamartin) h).getColonneHerbe());
-                System.out.println(">> Lamartin a planté un Herbier en (" + ((Lamartin)h).getLigneHerbe() + "," + ((Lamartin)h).getColonneHerbe() + ")");
+
                 }
         }
     }
@@ -107,59 +117,76 @@ ArrayList<AgentsHerbivores> aSupprimer = new ArrayList<>();
 if (proie != null) aSupprimer.add(proie);
 // après la boucle des carnivores :
 agentsHerbivoreses.removeAll(aSupprimer);
+Statistiques.decrementerHerbivores();
         } else {
-                int ligAlea = 0;
-                int colAlea = 0;
-            try {
-                // position aléatoire
-                ligAlea = (int)(Math.random() * terrain.nbLignes)+1;
-                colAlea = (int)(Math.random() * terrain.nbColonnes)+1;
-                o.seDeplacer(ligAlea, colAlea);
-            } catch (PositionInvalideException e) {
-                System.out.println(e.getMessage());
-            }
-            Ressource r = terrain.getCase(ligAlea, colAlea);
-            if(r instanceof Bijoux){
-             Statistiques.incrementerRessources();
-                terrain.viderCase(ligAlea, colAlea);
+               int[] dx = {-1, 0, 1, 0};
+    int[] dy = {0, 1, 0, -1};
+    int dir = (int)(Math.random() * 4);
+    int newLig = o.x + dx[dir];
+    int newCol = o.y + dy[dir];
+    
+    if (terrain.sontValides(newLig, newCol)) {
+        try {
+            o.seDeplacer(newLig, newCol);
+            Ressource r = terrain.getCase(newLig, newCol);
+            if (r instanceof Bijoux) {
+                ((Bijoux) r).evaluer();
+                Statistiques.incrementerRessources();
+                terrain.viderCase(newLig, newCol);
                 ressources.remove(r);
+                System.out.println(">> Orque a collecté de l'or en (" + newLig + "," + newCol + ")");
             }
+        } catch (PositionInvalideException e) {
+            System.out.println(e.getMessage());
+        }
+    }
         }
     }
 }
-for (Ressource r : ressources) {
-    if (r instanceof Herbiers) {
-        ((Herbiers) r).evoluer();
-    }
-}
-System.out.print(afficherTerrain());
-System.out.println("=== Herbivores ===");
-for (AgentsHerbivores h : agentsHerbivoreses) {
-    System.out.println(h);
-}
-System.out.println("=== Carnivores ===");
-for (AgentsCarnivores c : agentsCarnivoreses) {
-    System.out.println(c);
-}
+// for (Ressource r : ressources) {
+//     if (r instanceof Herbiers) {
+//         ((Herbiers) r).evoluer();
+//     }
+// }
+// System.out.print(afficherTerrain());
+// System.out.println("=== Herbivores ===");
+// for (AgentsHerbivores h : agentsHerbivoreses) {
+//     System.out.println(h);
+// }
+// System.out.println("=== Carnivores ===");
+// for (AgentsCarnivores c : agentsCarnivoreses) {
+//     System.out.println(c);
+// }
 
-Statistiques.afficherStats();
+// Statistiques.afficherStats();
 
 }
 
 
 public void lancerSimulation(int nbEtapes, BufferedWriter writer) throws IOException {
+    writer.write("=== Terrain Initial ===");
+    writer.newLine();
+    writer.write(afficherTerrain());
+    writer.newLine();
+    System.out.println("=== Terrain Initial ===");
+    System.out.print(afficherTerrain());
     for (int i = 0; i < nbEtapes; i++) {
         writer.write("=== Étape " + (i + 1) + " ===");
         writer.newLine();
         // écrire les stats
+        writer.write("=== Terrain  ===");
+        writer.newLine();
+        writer.write(afficherTerrain());
+        writer.newLine();
+
+       
         writer.write("Herbivores vivants: " + agentsHerbivoreses.size());
         writer.newLine();
         writer.write("Carnivores vivants: " + agentsCarnivoreses.size());
         writer.newLine();
-        writer.write("Ressources récoltées: " + ressources.size());
+        writer.write("Ressources récoltées: " + Statistiques.getNbRessourcesCollectees());
         writer.newLine();
-        writer.write("Terrain:"+afficherTerrain());
-        writer.newLine();
+       
         etape();
         
     }

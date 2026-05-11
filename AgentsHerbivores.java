@@ -11,6 +11,9 @@ public abstract class AgentsHerbivores extends Agent implements OutilsHerbivores
        if(r instanceof Herbiers){
             r.setQuantite(r.getQuantite() - 1);
            Statistiques.incrementerRessources();
+           if (r.getQuantite() == 0) {
+            terrain.viderCase(lig, col); 
+        }
         
 
     }

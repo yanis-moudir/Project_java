@@ -22,6 +22,9 @@ public class Statistiques{
     public static void incrementerRessources(){
         nbRessourcesCollectees++;
     } 
+    public static int getNbRessourcesCollectees(){
+        return nbRessourcesCollectees;
+    }
 
     public static  void afficherStats(){
         System.out.println("Nombre de herbivores vivants: "+nbHerbivoresVivants);
